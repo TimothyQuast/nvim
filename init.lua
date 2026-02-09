@@ -5,6 +5,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.softtabstop = 4
+vim.opt.signcolumn = "yes"
 
 vim.opt.winborder = "rounded"
 
@@ -14,8 +15,8 @@ end
 
 vim.g.mapleader = " "
 vim.keymap.set('n', '<leader>e', ':Ex<CR>')
-vim.keymap.set('n', '<leader>g', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<leader>G', vim.diagnostic.goto_prev)
+vim.keymap.set('n', '<leader>g', function() vim.diagnostic.jump({ count = 1, float = true }) end)
+vim.keymap.set('n', '<leader>G', function() vim.diagnostic.jump({ count = -1, float = true }) end)
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>p', '"+p')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y')
@@ -23,12 +24,14 @@ vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d')
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>lf', vim.lsp.buf.format)
 
+vim.keymap.set('n', '<leader>f', ":Pick files<CR>")
+vim.keymap.set('n', '<leader>h', ":Pick help<CR>")
+vim.keymap.set('i', '<C-a>', "<C-x><C-o>", {noremap = true})
 
 
 -- available commands
 vim.keymap.set('n', '<leader>q', available_message)
 vim.keymap.set('n', '<leader>w', available_message)
-vim.keymap.set('n', '<leader>f', available_message)
 vim.keymap.set('n', '<leader>b', available_message)
 vim.keymap.set('n', '<leader>a', available_message)
 vim.keymap.set('n', '<leader>r', available_message)
@@ -47,7 +50,6 @@ vim.keymap.set('n', '<leader>n', available_message)
 vim.keymap.set('n', '<leader>i', available_message)
 vim.keymap.set('n', '<leader>o', available_message)
 vim.keymap.set('n', '<leader>k', available_message)
-vim.keymap.set('n', '<leader>h', available_message)
 vim.keymap.set('n', '<leader>,', available_message)
 vim.keymap.set('n', '<leader>.', available_message)
 vim.keymap.set('n', '<leader>/', available_message)
@@ -57,13 +59,17 @@ vim.pack.add({
     { src = 'https://github.com/neovim/nvim-lspconfig' },
     { src = 'https://github.com/nvim-mini/mini.pick.git' },
 
+    { src = 'https://github.com/mason-org/mason.nvim.git' },
     { src = 'https://github.com/mfussenegger/nvim-dap.git' },
 })
 
-vim.lsp.enable({ "lua_ls", "zls" })
+require "mini.pick".setup()
+require "mason".setup()
+
+vim.lsp.enable({ "lua_ls", "zls", "ruff", "svelte"})
+vim.cmd("set completeopt+=noselect")
 
 vim.cmd("colo tokyonight-moon")
-
 
 vim.lsp.config("lua_ls", {
     settings = {
@@ -74,3 +80,4 @@ vim.lsp.config("lua_ls", {
         }
     }
 })
+
